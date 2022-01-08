@@ -1,1 +1,1 @@
-INSERT INTO host (name, has_images, url) VALUES ('Oakville Windows & Doors', 1, 'https://owd.noahvarghese.me');
+INSERT INTO hosts (name, has_images, url) VALUES ('Oakville Windows & Doors', 1, 'https://owd.noahvarghese.me');

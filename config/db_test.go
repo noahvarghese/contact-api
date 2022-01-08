@@ -6,8 +6,10 @@ import (
 	"github.com/joho/godotenv"
 )
 
+var envPath string = "../.env"
+
 func TestLoadConfigFromEnv(t *testing.T) {
-	godotenv.Load("../../.env")
+	godotenv.Load(envPath)
 	config := loadConfigFromEnv()
 
 	t.Log(config)
@@ -34,7 +36,7 @@ func TestLoadConfigFromEnv(t *testing.T) {
 }
 
 func TestInit(t *testing.T) {
-	godotenv.Load("../../.env")
+	godotenv.Load(envPath)
 
 	db := Init()
 

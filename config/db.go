@@ -10,12 +10,8 @@ import (
 )
 
 var once sync.Once
-var (
-	db *gorm.DB
-)
-var (
-	err error
-)
+var db *gorm.DB
+var err error
 
 type databaseConfig struct {
 	DB_NAME string
