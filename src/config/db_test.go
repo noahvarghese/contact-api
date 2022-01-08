@@ -1,19 +1,14 @@
-package config
+package db
 
 import (
-	"os"
 	"testing"
+
+	"github.com/joho/godotenv"
 )
 
 func TestLoadConfigFromEnv(t *testing.T) {
-
-	os.Setenv("DB_NAME", "NAME")
-	os.Setenv("DB_PWD", "PWD")
-	os.Setenv("DB_PORT", "PORT")
-	os.Setenv("DB_URL", "URL")
-	os.Setenv("DB_USER", "USER")
-
-	config := LoadConfigFromEnv()
+	godotenv.Load("../../.env")
+	config := loadConfigFromEnv()
 
 	t.Log(config)
 
@@ -39,11 +34,9 @@ func TestLoadConfigFromEnv(t *testing.T) {
 }
 
 func TestInit(t *testing.T) {
-	db, err := Init()
+	godotenv.Load("../../.env")
 
-	if err != nil {
-		t.Error("Error creating database")
-	}
+	db := Init()
 
 	if db == nil {
 		t.Error("Invalid config")

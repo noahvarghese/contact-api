@@ -1,11 +1,20 @@
-package config
+package db
 
 import (
 	"fmt"
 	"os"
+	"sync"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+)
+
+var once sync.Once
+var (
+	db *gorm.DB
+)
+var (
+	err error
 )
 
 type databaseConfig struct {
@@ -16,7 +25,7 @@ type databaseConfig struct {
 	DB_PORT string
 }
 
-func LoadConfigFromEnv() databaseConfig {
+func loadConfigFromEnv() databaseConfig {
 	config := databaseConfig{
 		DB_NAME: os.Getenv("DB_NAME"),
 		DB_PWD:  os.Getenv("DB_PWD"),
@@ -28,8 +37,8 @@ func LoadConfigFromEnv() databaseConfig {
 	return config
 }
 
-func GenerateDSN(config databaseConfig) string {
-	return fmt.Sprintf(
+func generateDSN(config databaseConfig) string {
+	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True",
 		config.DB_USER,
 		config.DB_PWD,
@@ -37,12 +46,21 @@ func GenerateDSN(config databaseConfig) string {
 		config.DB_PORT,
 		config.DB_NAME,
 	)
+
+	return dsn
 }
 
-func Init() (*gorm.DB, error) {
-	config := LoadConfigFromEnv()
-	dsn := GenerateDSN(config)
+func Init() *gorm.DB {
+	once.Do(func() {
+		config := loadConfigFromEnv()
+		dsn := generateDSN(config)
+		db, err = gorm.Open((mysql.Open(dsn)))
 
-	db, err := gorm.Open(mysql.Open(dsn))
-	return db, err
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	})
+
+	return db
 }
