@@ -1,5 +1,8 @@
 # contact 
 
+https://aws.amazon.com/premiumsupport/knowledge-center/custom-headers-api-gateway-lambda/
+https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/
+
 This is a sample template for contact - Below is a brief explanation of what we have generated for you:
 
 ```bash
