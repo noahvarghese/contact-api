@@ -1,8 +1,8 @@
 package setter
 
 import (
+	"contact-api/pkg/getter"
 	"encoding/json"
-	"src/pkg/getter"
 
 	"gorm.io/gorm"
 )

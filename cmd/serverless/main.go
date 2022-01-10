@@ -1,8 +1,8 @@
 package main
 
 import (
-	"contact/pkg/getter"
-	"contact/pkg/storage"
+	"contact-api/pkg/getter"
+	"contact-api/pkg/storage"
 	"context"
 	"errors"
 	"fmt"

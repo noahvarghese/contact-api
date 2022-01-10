@@ -1,7 +1,7 @@
 package getter
 
 import (
-	"contact/pkg/storage"
+	"contact-api/pkg/storage"
 	"testing"
 
 	"github.com/joho/godotenv"

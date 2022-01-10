@@ -11,6 +11,6 @@ require (
 	github.com/jinzhu/now v1.1.3 // indirect
 )
 
-module contact
+module contact-api
 
 go 1.17

@@ -1,12 +1,14 @@
 package getter
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type Field struct {
 	gorm.Model
-	Id int
-	Name string
-	Type string
+	Id      int
+	Name    string
+	Type    string
 	Host_id int
 }
 
