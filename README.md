@@ -15,7 +15,12 @@ This is a sample template for contact - Below is a brief explanation of what we 
 ```
 ## About
 
-Sends contact request email to businesses from their frontends which I wrote.
+Works for websites which I (Noah) have written.
+A lot of small business sites may have a contact request form on the website.
+That form is unauthenticated, meaning anyone could send a request.
+And instead of just handling that on a website per wesite basis, I wasnt one service that handles all unauthenticated contact requests for these sites.
+So that if my email account gets hacked I only have to update one set of environment variables.
+And that way all messages are stored in a database.
 
 ## Flow
 

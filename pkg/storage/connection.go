@@ -1,4 +1,4 @@
-package db
+package storage
 
 import (
 	"fmt"
@@ -21,8 +21,8 @@ type databaseConfig struct {
 	DB_PORT string
 }
 
-func loadConfigFromEnv() databaseConfig {
-	config := databaseConfig{
+func loadConfigFromEnv() *databaseConfig {
+	config := &databaseConfig{
 		DB_NAME: os.Getenv("DB_NAME"),
 		DB_PWD:  os.Getenv("DB_PWD"),
 		DB_PORT: os.Getenv("DB_PORT"),
@@ -33,7 +33,7 @@ func loadConfigFromEnv() databaseConfig {
 	return config
 }
 
-func generateDSN(config databaseConfig) string {
+func generateDSN(config *databaseConfig) string {
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True",
 		config.DB_USER,
@@ -46,7 +46,7 @@ func generateDSN(config databaseConfig) string {
 	return dsn
 }
 
-func Init() *gorm.DB {
+func init() {
 	once.Do(func() {
 		config := loadConfigFromEnv()
 		dsn := generateDSN(config)
@@ -57,6 +57,8 @@ func Init() *gorm.DB {
 			os.Exit(1)
 		}
 	})
+}
 
+func Connection() *gorm.DB {
 	return db
 }

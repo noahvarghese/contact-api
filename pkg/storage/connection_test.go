@@ -1,4 +1,4 @@
-package db
+package storage
 
 import (
 	"testing"
@@ -38,9 +38,9 @@ func TestLoadConfigFromEnv(t *testing.T) {
 func TestInit(t *testing.T) {
 	godotenv.Load(envPath)
 
-	db := Init()
+	db := Connection()
 
 	if db == nil {
-		t.Error("Invalid config")
+		t.Error("Invalid connection string")
 	}
 }

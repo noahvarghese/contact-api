@@ -15,3 +15,8 @@
 # vendor/
 
 .env
+
+.aws-sam
+
+# Executables
+build/

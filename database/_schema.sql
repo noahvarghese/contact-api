@@ -23,7 +23,7 @@ CREATE TABLE fields (
 CREATE TABLE messages (
     id INT NOT NULL AUTO_INCREMENT,
     original TEXT NOT NULL,
-    msg TEXT NOT NULL,
+    contents TEXT NOT NULL,
     sent TINYINT(1) NOT NULL DEFAULT 0,
     host_id INT NOT NULL,
     PRIMARY KEY (id),
