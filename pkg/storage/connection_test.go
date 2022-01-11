@@ -2,42 +2,34 @@ package storage
 
 import (
 	"testing"
-
-	"github.com/joho/godotenv"
 )
 
-var envPath string = "../.env"
-
 func TestLoadConfigFromEnv(t *testing.T) {
-	godotenv.Load(envPath)
 	config := loadConfigFromEnv()
-
-	t.Log(config)
+	// t.Log(config, "\n")
 
 	if config.DB_NAME == "" {
-		t.Error("DB_NAME NOT SET")
+		t.Error("DATABASE NAME NOT SET")
 	}
 
-	if config.DB_NAME == "" {
-		t.Error("DB_PWD NOT SET")
+	if config.DB_PWD == "" {
+		t.Error("DATABASE PASSWORD NOT SET")
 	}
 
-	if config.DB_NAME == "" {
-		t.Error("DB_PORT NOT SET")
+	if config.DB_PORT == "" {
+		t.Error("DATABASE PORT NOT SET")
 	}
 
-	if config.DB_NAME == "" {
-		t.Error("DB_URL NOT SET")
+	if config.DB_URL == "" {
+		t.Error("DATABASE URL NOT SET")
 	}
 
-	if config.DB_NAME == "" {
-		t.Error("DB_USER NOT SET")
+	if config.DB_USER == "" {
+		t.Error("DATABASE USER NOT SET")
 	}
 }
 
 func TestInit(t *testing.T) {
-	godotenv.Load(envPath)
-
 	db := Connection()
 
 	if db == nil {

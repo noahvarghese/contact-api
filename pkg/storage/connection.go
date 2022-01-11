@@ -2,6 +2,7 @@ package storage
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"sync"
 
@@ -47,9 +48,11 @@ func generateDSN(config *databaseConfig) string {
 }
 
 func init() {
+	fmt.Println(ioutil.ReadFile("../../.env"))
 	once.Do(func() {
 		config := loadConfigFromEnv()
 		dsn := generateDSN(config)
+		// fmt.Print(os.Environ(), dsn)
 		db, err = gorm.Open((mysql.Open(dsn)))
 
 		if err != nil {

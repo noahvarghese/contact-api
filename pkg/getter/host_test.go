@@ -2,13 +2,15 @@ package getter
 
 import (
 	"contact-api/pkg/storage"
+	"fmt"
+	"os"
 	"testing"
 
 	"github.com/joho/godotenv"
 )
 
 // Expects OWD to be there as our db user currently doesnt have delete/update/insert privileges
-var envPath string = "../.env"
+var envPath string = "../../.env"
 
 func TestRead(t *testing.T) {
 	// Setup
@@ -22,7 +24,8 @@ func TestRead(t *testing.T) {
 	err := host.Read(db)
 
 	if err != nil {
-		t.Errorf("Test Host Read Failed: %w", err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	if host.Name == "" {
