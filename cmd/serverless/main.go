@@ -1,11 +1,10 @@
 package main
 
 import (
-	"contact-api/pkg/getter"
-	"contact-api/pkg/storage"
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -15,46 +14,65 @@ type Event struct {
 	headers map[string]string
 }
 
-func Handler(ctx context.Context, event *Event) (string, error) {
-	fmt.Println(ctx)
-	fmt.Println(event)
-
-	db := storage.Connection()
-
-	if event == nil {
-		fmt.Println("Body not set")
-		os.Exit(1)
+func getHost(e *Event) (string, error) {
+	if e == nil {
+		return "", errors.New("body not set")
 	}
 
-	if event.headers == nil {
-		fmt.Println("Headers not set")
-		os.Exit(1)
+	if e.headers == nil {
+		return "", errors.New("headers not set")
 	}
 
 	// get url from lambda request
-	hostName := event.headers["host"]
+	h := e.headers["host"]
+	return h, nil
+}
 
-	// Get the host from url
-	host := &getter.Host{
-		Url: hostName,
+func Handler(ctx context.Context, event *Event) (map[string]interface{}, error) {
+	fmt.Println(ctx)
+	fmt.Println(event)
+
+	_, err := getHost(event)
+
+	if err != nil {
+		return map[string]interface{}{
+			"statusCode": fmt.Sprint(http.StatusBadRequest),
+			"headers": map[string]string{
+				"content-type": "application/json",
+			},
+			"body": err.Error(),
+		}, nil
 	}
-	host.Read(db)
 
-	// If no host return 403
-	if host.Id < 1 {
-		return "", errors.New("Forbidden: Invalid url " + hostName)
-	}
+	// db := storage.Connection()
 
-	// If no schema return 404
-	template := &getter.Template{}
-	template.Read(db, host)
+	// // Get the host from url
+	// host := &getter.Host{
+	// 	Url: hostName,
+	// }
+	// host.Read(db)
 
-	if template.Id < 1 {
-		return "", errors.New("Template not found for " + host.Url)
-	}
+	// // If no host return 403
+	// if host.Id < 1 {
+	// 	return "", errors.New("Forbidden: Invalid url " + hostName)
+	// }
 
-	// If host.has_images store images in s3
-	return "Success", nil
+	// // If no schema return 404
+	// template := &getter.Template{}
+	// template.Read(db, host)
+
+	// if template.Id < 1 {
+	// 	return "", errors.New("Template not found for " + host.Url)
+	// }
+
+	// // If host.has_images store images in s3
+	// return "Success", nil
+	return map[string]interface{}{
+		"statusCode": fmt.Sprint(http.StatusCreated),
+		"headers": map[string]string{
+			"content-type": "application/json",
+		},
+	}, nil
 }
 
 func main() {
