@@ -21,6 +21,16 @@ func Handler(ctx context.Context, event *Event) (string, error) {
 
 	db := storage.Connection()
 
+	if event == nil {
+		fmt.Println("Body not set")
+		os.Exit(1)
+	}
+
+	if event.headers == nil {
+		fmt.Println("Headers not set")
+		os.Exit(1)
+	}
+
 	// get url from lambda request
 	hostName := event.headers["host"]
 
