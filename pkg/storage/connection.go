@@ -46,19 +46,12 @@ func generateDSN(config *databaseConfig) string {
 	return dsn
 }
 
-func init() {
+func Connection() (*gorm.DB, error) {
 	once.Do(func() {
 		config := loadConfigFromEnv()
 		dsn := generateDSN(config)
 		db, err = gorm.Open((mysql.Open(dsn)))
-
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
 	})
-}
 
-func Connection() *gorm.DB {
-	return db
+	return db, err
 }
