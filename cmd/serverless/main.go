@@ -1,9 +1,12 @@
 package main
 
 import (
+	"contact-api/pkg/email"
 	"contact-api/pkg/getter"
+	"contact-api/pkg/setter"
 	"contact-api/pkg/storage"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -66,7 +69,7 @@ func Handler(ctx context.Context, event *Event) (map[string]interface{}, error) 
 	host.Read(db)
 
 	// If no host return 403
-	if host.Id < 1 {
+	if host.ID < 1 {
 		return map[string]interface{}{
 			"statusCode": fmt.Sprint(http.StatusBadRequest),
 			"headers": map[string]string{
@@ -77,25 +80,105 @@ func Handler(ctx context.Context, event *Event) (map[string]interface{}, error) 
 	}
 
 	// If no schema return 404
-	template := &getter.Template{}
-	template.Read(db, host)
+	t := &getter.Template{}
+	t.Read(db, host.ID)
 
-	if template.Id < 1 {
+	if t.ID < 1 {
 		return map[string]interface{}{
 			"statusCode": fmt.Sprint(http.StatusBadRequest),
 			"headers": map[string]string{
-				"content-type": "application/json",
+				"content-type": "text/plain",
 			},
 			"body": "Template not found for host " + host.Url,
 		}, nil
 	}
 
-	// If host.has_images store images in s3
+	// Get all fields for template from db
+	fields, err := (&getter.Field{}).GetAll(db, host.ID)
+
+	if err != nil {
+		return map[string]interface{}{
+			"statusCode": fmt.Sprint(http.StatusInternalServerError),
+			"headers": map[string]string{
+				"content-type": "text/plain",
+			},
+			"body": err.Error(),
+		}, nil
+	}
+
+	// check that all required fields exist
+	for i := 0; i < len(fields); i++ {
+		f := fields[i]
+
+		_, ok := event.body[f.Name]
+
+		if f.Required && !ok {
+			return map[string]interface{}{
+				"statusCode": fmt.Sprint(http.StatusBadRequest),
+				"headers": map[string]string{
+					"content-type": "text/plain",
+				},
+				"body": "Missing parameter: " + f.Name,
+			}, nil
+		}
+	}
+
+	jsonStr, err := json.Marshal(event.body)
+
+	if err != nil {
+		return map[string]interface{}{
+			"statusCode": fmt.Sprint(http.StatusInternalServerError),
+			"headers": map[string]string{
+				"content-type": "text/plain",
+			},
+			"body": err.Error(),
+		}, nil
+	}
+
+	message, err := setter.NewMessage(db, string(jsonStr), host.ID)
+
+	if err != nil {
+		return map[string]interface{}{
+			"statusCode": fmt.Sprint(http.StatusInternalServerError),
+			"headers": map[string]string{
+				"content-type": "text/plain",
+			},
+			"body": err.Error(),
+		}, nil
+	}
+
+	// Create email
+	mail, err := email.Bind(t, event.body)
+
+	if err != nil {
+		return map[string]interface{}{
+			"statusCode": fmt.Sprint(http.StatusInternalServerError),
+			"headers": map[string]string{
+				"content-type": "text/plain",
+			},
+			"body": err.Error(),
+		}, nil
+	}
+
+	err = email.Send(mail, host)
+
+	if err != nil {
+		return map[string]interface{}{
+			"statusCode": fmt.Sprint(http.StatusInternalServerError),
+			"headers": map[string]string{
+				"content-type": "text/plain",
+			},
+			"body": err.Error(),
+		}, nil
+	}
+
+	// Send email
+	message.SetSent()
 
 	return map[string]interface{}{
 		"statusCode": fmt.Sprint(http.StatusCreated),
 		"headers": map[string]string{
-			"content-type": "application/json",
+			"content-type": "text/plain",
 		},
 	}, nil
 }
