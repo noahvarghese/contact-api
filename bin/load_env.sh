@@ -2,7 +2,7 @@ envup() {
   local file=$([ -z "$1" ] && echo ".env" || echo ".env.$1")
 
   if [ -f $file ]; then
-    echo "Loading environemnt variables"
+    echo "Loading environment variables"
     set -a
     source $file
     set +a
