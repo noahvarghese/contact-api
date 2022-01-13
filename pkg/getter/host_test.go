@@ -2,8 +2,6 @@ package getter
 
 import (
 	"contact-api/pkg/storage"
-	"fmt"
-	"os"
 	"testing"
 
 	"github.com/joho/godotenv"
@@ -13,19 +11,22 @@ import (
 var envPath string = "../../.env"
 
 func TestRead(t *testing.T) {
-	// Setup
 	godotenv.Load(envPath)
-	db := storage.Connection()
 
-	host := &Host{
-		Url: "https://owd.noahvarghese.me",
-	}
-
-	err := host.Read(db)
+	db, err := storage.Connection()
 
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		t.Error(err)
+	}
+
+	host := &Host{
+		Url: "owd.noahvarghese.me",
+	}
+
+	err = host.Read(db)
+
+	if err != nil {
+		t.Error(err)
 	}
 
 	if host.Name == "" {
