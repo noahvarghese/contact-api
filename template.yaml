@@ -23,8 +23,10 @@ Resources:
           DB_USER: ""
           DB_PWD: ""
           DB_PORT: ""
-          MAIL_USER: ""
-          MAIL_PWD: ""
+          SMTP_PORT: ""
+          SMTP_PWD: ""
+          SMTP_URL: ""
+          SMTP_USER: ""
       Events:
         CatchAll:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
