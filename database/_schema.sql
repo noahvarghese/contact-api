@@ -8,9 +8,9 @@ CREATE TABLE hosts (
     email VARCHAR(255) COLLATE UTF8_GENERAL_CI NOT NULL,
     subject VARCHAR(255) NOT NULL,
     url VARCHAR(255) COLLATE UTF8_GENERAL_CI NOT NULL,
-    created_on DATETIME NOT NULL DEFAULT NOW(),
-    updated_on DATETIME NOT NULL DEFAULT NOW(),
-    deleted_on DATETIME DEFAULT NULL,
+    created_at DATETIME NOT NULL DEFAULT NOW(),
+    updated_at DATETIME NOT NULL DEFAULT NOW(),
+    deleted_at DATETIME DEFAULT NULL,
     PRIMARY KEY (id),
     UNIQUE(url),
     UNIQUE(email)
@@ -21,9 +21,9 @@ CREATE TABLE fields (
     name VARCHAR(255) COLLATE UTF8_GENERAL_CI NOT NULL,
     required TINYINT(1) DEFAULT 0 NOT NULL,
     host_id INT NOT NULL,
-    created_on DATETIME NOT NULL DEFAULT NOW(),
-    updated_on DATETIME NOT NULL DEFAULT NOW(),
-    deleted_on DATETIME DEFAULT NULL,
+    created_at DATETIME NOT NULL DEFAULT NOW(),
+    updated_at DATETIME NOT NULL DEFAULT NOW(),
+    deleted_at DATETIME DEFAULT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (host_id) REFERENCES hosts(id)
 );
@@ -33,9 +33,9 @@ CREATE TABLE messages (
     contents TEXT COLLATE UTF8_GENERAL_CI NOT NULL,
     sent TINYINT(1) NOT NULL DEFAULT 0,
     host_id INT NOT NULL,
-    created_on DATETIME NOT NULL DEFAULT NOW(),
-    updated_on DATETIME NOT NULL DEFAULT NOW(),
-    deleted_on DATETIME DEFAULT NULL,
+    created_at DATETIME NOT NULL DEFAULT NOW(),
+    updated_at DATETIME NOT NULL DEFAULT NOW(),
+    deleted_at DATETIME DEFAULT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (host_id) REFERENCES hosts(id)
 );
@@ -44,9 +44,9 @@ CREATE TABLE templates (
     id INT NOT NULL AUTO_INCREMENT,
     template TEXT COLLATE UTF8_GENERAL_CI NOT NULL,
     host_id INT NOT NULL,
-    created_on DATETIME NOT NULL DEFAULT NOW(),
-    updated_on DATETIME NOT NULL DEFAULT NOW(),
-    deleted_on DATETIME DEFAULT NULL,
+    created_at DATETIME NOT NULL DEFAULT NOW(),
+    updated_at DATETIME NOT NULL DEFAULT NOW(),
+    deleted_at DATETIME DEFAULT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (host_id) REFERENCES hosts(id)
 );
