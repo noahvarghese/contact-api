@@ -6,7 +6,6 @@ import (
 
 func TestLoadConfigFromEnv(t *testing.T) {
 	config := loadConfigFromEnv()
-	// t.Log(config, "\n")
 
 	if config.DB_NAME == "" {
 		t.Error("DATABASE NAME NOT SET")
