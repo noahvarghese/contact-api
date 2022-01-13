@@ -30,9 +30,13 @@ func TestLoadConfigFromEnv(t *testing.T) {
 }
 
 func TestInit(t *testing.T) {
-	db := Connection()
+	db, err := Connection()
 
 	if db == nil {
 		t.Error("Invalid connection string")
+	}
+
+	if err != nil {
+		t.Error(err)
 	}
 }
