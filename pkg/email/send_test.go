@@ -4,12 +4,17 @@ import (
 	"contact-api/pkg/getter"
 	"errors"
 	"testing"
+
+	"github.com/joho/godotenv"
 )
 
+const EnvPath = "../../.env"
 const Template = "Hello {{ .Name }}"
 const Correct = "Hello Noah"
 
 func TestBind(t *testing.T) {
+	godotenv.Load(EnvPath)
+
 	tpl := &getter.Template{
 		Template: Template,
 	}
@@ -24,4 +29,8 @@ func TestBind(t *testing.T) {
 	if tplString != Correct {
 		t.Error(errors.New("incorrect templated string: " + tplString + "\nExpected: " + Correct))
 	}
+}
+
+func TestSend() {
+
 }

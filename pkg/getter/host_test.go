@@ -8,10 +8,10 @@ import (
 )
 
 // Expects OWD to be there as our db user currently doesnt have delete/update/insert privileges
-var envPath string = "../../.env"
+const EnvPath = "../../.env"
 
 func TestRead(t *testing.T) {
-	godotenv.Load(envPath)
+	godotenv.Load(EnvPath)
 
 	db, err := storage.Connection()
 

@@ -2,9 +2,14 @@ package storage
 
 import (
 	"testing"
+
+	"github.com/joho/godotenv"
 )
 
+const EnvPath = "../../.env"
+
 func TestLoadConfigFromEnv(t *testing.T) {
+	godotenv.Load(EnvPath)
 	config := loadConfigFromEnv()
 
 	if config.DB_NAME == "" {
