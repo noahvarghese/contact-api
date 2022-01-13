@@ -32,7 +32,7 @@ func Send(m string, h *getter.Host) error {
 	url := os.Getenv("SMTP_URL")
 	user := os.Getenv("SMTP_USER")
 
-	message := []byte(m)
+	message := []byte(fmt.Sprintf("Subject: %s\r\n\r\n%s", h.Subject, m))
 
 	auth := smtp.PlainAuth("", user, password, url)
 

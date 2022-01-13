@@ -3,14 +3,15 @@ package email
 import (
 	"contact-api/pkg/getter"
 	"errors"
+	"os"
 	"testing"
 
 	"github.com/joho/godotenv"
 )
 
 const EnvPath = "../../.env"
-const Template = "Hello {{ .Name }}"
-const Correct = "Hello Noah"
+const Template = "This is a {{ .Test }}"
+const Correct = "This is a Test"
 
 func TestBind(t *testing.T) {
 	godotenv.Load(EnvPath)
@@ -18,7 +19,7 @@ func TestBind(t *testing.T) {
 	tpl := &getter.Template{
 		Template: Template,
 	}
-	body := map[string]string{"Name": "Noah"}
+	body := map[string]string{"Test": "Test"}
 
 	tplString, err := Bind(tpl, body)
 
@@ -31,6 +32,15 @@ func TestBind(t *testing.T) {
 	}
 }
 
-func TestSend() {
+func TestSend(t *testing.T) {
+	godotenv.Load(EnvPath)
 
+	tpl := &getter.Template{
+		Template: Template,
+	}
+	body := map[string]string{"Test": "Test"}
+
+	tplString, _ := Bind(tpl, body)
+
+	Send(tplString, &getter.Host{Email: os.Getenv("SMTP_USER"), Subject: "TEST"})
 }
