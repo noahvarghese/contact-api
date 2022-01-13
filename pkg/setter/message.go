@@ -1,24 +1,51 @@
 package setter
 
 import (
-	"contact-api/pkg/getter"
-	"encoding/json"
+	"errors"
 
 	"gorm.io/gorm"
 )
 
+var db *gorm.DB
+
 type Message struct {
 	gorm.Model
-	Original string
+	ID       uint
 	Contents string
-	Host_id  int
+	Sent     bool
+	Host_id  uint
 }
 
-func (m *Message) Create(db *gorm.DB, fieldsInMessage **getter.Field) error {
-	fields := make(map[string]string)
+func NewMessage(d *gorm.DB, c string, h uint) (*Message, error) {
+	m := &Message{Contents: c, Host_id: h, Sent: false}
+	db = d
 
-	json.Unmarshal([]byte(m.Contents), &fields)
+	if db == nil {
+		return nil, errors.New("database connection not instantiated")
+	}
+
+	err := m.Create()
+
+	return m, err
+}
+
+func (m *Message) Create() error {
+	if db == nil {
+		return errors.New("database connection not instantiated")
+	}
 
 	tx := db.Create(m)
+	return tx.Error
+}
+
+func (m *Message) SetSent() error {
+	if db == nil {
+		return errors.New("database connection not instantiated")
+	}
+
+	m.Sent = true
+
+	tx := db.Update("sent", m)
+
 	return tx.Error
 }
