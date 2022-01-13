@@ -4,36 +4,49 @@ USE contact;
 
 CREATE TABLE hosts (
     id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
-    has_images TINYINT(1) NOT NULL,
-    url VARCHAR(255) NOT NULL,
+    name VARCHAR(255) COLLATE UTF8_GENERAL_CI NOT NULL,
+    email VARCHAR(255) COLLATE UTF8_GENERAL_CI NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    url VARCHAR(255) COLLATE UTF8_GENERAL_CI NOT NULL,
+    created_on DATETIME NOT NULL DEFAULT NOW(),
+    updated_on DATETIME NOT NULL DEFAULT NOW(),
+    deleted_on DATETIME DEFAULT NULL,
     PRIMARY KEY (id),
-    UNIQUE(url)
+    UNIQUE(url),
+    UNIQUE(email)
 );
 
 CREATE TABLE fields (
     id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
-    type VARCHAR(255) NOT NULL,
+    name VARCHAR(255) COLLATE UTF8_GENERAL_CI NOT NULL,
+    required TINYINT(1) DEFAULT 0 NOT NULL,
     host_id INT NOT NULL,
+    created_on DATETIME NOT NULL DEFAULT NOW(),
+    updated_on DATETIME NOT NULL DEFAULT NOW(),
+    deleted_on DATETIME DEFAULT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (host_id) REFERENCES hosts(id)
 );
 
 CREATE TABLE messages (
     id INT NOT NULL AUTO_INCREMENT,
-    original TEXT NOT NULL,
-    contents TEXT NOT NULL,
+    contents TEXT COLLATE UTF8_GENERAL_CI NOT NULL,
     sent TINYINT(1) NOT NULL DEFAULT 0,
     host_id INT NOT NULL,
+    created_on DATETIME NOT NULL DEFAULT NOW(),
+    updated_on DATETIME NOT NULL DEFAULT NOW(),
+    deleted_on DATETIME DEFAULT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (host_id) REFERENCES hosts(id)
 );
 
 CREATE TABLE templates (
     id INT NOT NULL AUTO_INCREMENT,
-    template TEXT NOT NULL,
+    template TEXT COLLATE UTF8_GENERAL_CI NOT NULL,
     host_id INT NOT NULL,
+    created_on DATETIME NOT NULL DEFAULT NOW(),
+    updated_on DATETIME NOT NULL DEFAULT NOW(),
+    deleted_on DATETIME DEFAULT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (host_id) REFERENCES hosts(id)
 );
