@@ -21,3 +21,8 @@
 
 # Executables
 build/
+cli
+serverless
+!cmd/cli
+!cmd/serverless
+main
