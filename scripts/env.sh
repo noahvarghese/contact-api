@@ -12,6 +12,5 @@ envup() {
   fi
 }
 
-envup "$@"
-
-# Run as source ./bin/load_dotenv
+# envup "$@"
+# Run as source ./bin/env

@@ -1,8 +1,8 @@
 .PHONY: build
 
 build:
-	sam build
+	sam build --use-container
 
 build-ContactFunction:
-	GOOS=linux GOARCH=amd64 go build -o main ./cmd/serverless/main.go
-	cp ./main $(ARTIFACTS_DIR)
+	./scripts/build.sh --serverless-prod
+	cp ./build/main $(ARTIFACTS_DIR)

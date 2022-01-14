@@ -1,7 +1,7 @@
 #!/bin/bash
 
 build_env_json_str() {
-    envsubst < ./test/.env.template.json
+    envsubst < ./test/env.template.json
 }
 
 build_env_json_file() {
@@ -30,7 +30,8 @@ integration_test() {
     ./cli --host=owd.noahvarghese.me --json=./test/body.template.json
 
     if [ $? -gt 0 ]; then
-        echo INTEGRATION TEST FAILED
+        printf "\n\nINTEGRATION TEST FAILED\n\n"
+
         exit 255
     fi
 
@@ -57,20 +58,33 @@ e2e_test() {
     if [[ $result == $(printf "{ \"message\": \"Sent\" }\n") ]]; then
         exit 0
     else
-        printf "E2E TEST FAILED\n"
+        printf "\n\nE2E TEST FAILED\n\n"
         exit 255
     fi
 }
 
-# Setup environment
-./scripts/load_env.sh
+
+ARGS=(--e2e,-e,--integration,-i)
+
+
+# check_args $ARGS || exit $?
+TEST=""
 
 # Get from cli args whether end to end or integration test
-if [[ $1 == --e2e ]]; then
-    e2e_test
-elif [[ $1 == --integration ]];
-    integration_test
+if [[ $1 == --e2e ]] || [[ $1 == '-e' ]]; then
+    TEST="e2e_test"
+elif [[ $1 == --integration ]] || [[ $1 == '-i' ]]; then
+    TEST="integration_test"
 else
-    printf "Invalid option, must be one of '--e2e' or '--integration'\n"
+    printf "Invalid option, must be one of ['--e2e', '-e'] or ['--integration', '-i']\n"
     exit 1
 fi
+
+# Setup environment
+source ./scripts/env.sh
+
+if ! envup; then
+    exit 1
+fi
+
+$TEST
