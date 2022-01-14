@@ -63,7 +63,7 @@ e2e_test() {
 }
 
 # Setup environment
-./bin/load_env.sh
+./scripts/load_env.sh
 
 # Get from cli args whether end to end or integration test
 if [[ $1 == --e2e ]]; then

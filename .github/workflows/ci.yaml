@@ -54,7 +54,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
       - name: integration test
-        run: ./bin/test.sh --integration
+        run: ./scripts/test.sh --integration
   e2e-test:
     env:
       DB_NAME: ${{ secrets.DB_NAME }}
@@ -78,7 +78,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
       - name: end to end test
-        run: ./bin/test.sh --e2e
+        run: ./scripts/test.sh --e2e
 
       
 
