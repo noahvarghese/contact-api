@@ -68,7 +68,7 @@ e2e_test() {
 # Get from cli args whether end to end or integration test
 if [[ $1 == --e2e ]]; then
     e2e_test
-elif [[ $1 == --integration ]]
+elif [[ $1 == --integration ]];
     integration_test
 else
     printf "Invalid option, must be one of '--e2e' or '--integration'\n"
