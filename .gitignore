@@ -20,9 +20,5 @@
 .aws-sam
 
 # Executables
-build/
-cli
-serverless
-!cmd/cli
-!cmd/serverless
-main
+build/*
+!build/.keep
