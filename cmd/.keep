@@ -1,0 +1,4 @@
+# Keep
+
+Contains the entry points of the app
+Any of these files is the input for go build
