@@ -13,6 +13,7 @@ func main() {
 		os.Getenv("AWS_LAMBDA_RUNTIME_API") != "" {
 		lambda.Start(app.Handler)
 	} else {
-		fmt.Println("Not running in lambda environment")
+		fmt.Fprintln(os.Stderr, "Not running in lambda environment")
+		os.Exit(1)
 	}
 }
