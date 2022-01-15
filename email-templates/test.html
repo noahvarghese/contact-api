@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <div>
+      <ul>
+        <li>Required: {{.required}}</li>
+        {{ if .not_required }}
+        <li>Not Required: {{.not_required}}</li>
+        {{end}}
+      </ul>
+    </div>
+  </body>
+</html>
