@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <div>
+      <div>
+        <sub
+          ><em
+            >Please do not reply to this email. It will not reach the intended
+            recipient. If there are any issues please email
+            <a href="mailto:varghese.noah@gmail.com">Noah Varghese</a></em
+          ></sub
+        >
+      </div>
+      <ul>
+        <li>Name: {{.name}}</li>
+        <li>Email: {{.email}}</li>
+        {{ if .Phone }}
+        <li>Phone: {{.Phone}}</li>
+        {{end}} {{ if .City }}
+        <li>City: {{.City}}</li>
+        {{end}} {{ if .Products }}
+        <li>City: {{.Products}}</li>
+        {{end}}
+      </ul>
+      <p>{{.message}}</p>
+    </div>
+  </body>
+</html>
