@@ -22,20 +22,47 @@ get_test_data_json() {
     echo $body_json
 }
 
-integration_test() {
-    # Build the cli version so we don't have the dependency of the api gateway
-	GOOS=linux GOARCH=amd64 go build -o cli ./cmd/cli/main.go
-        
-    # Execute cmd with args 
-    ./cli --host=owd.noahvarghese.me --json=./test/body.template.json
+# $1 is the title of the test
+# $2 is the input file to test
+# $3 boolean, false means we are running test to fail, true means test to pass
+test() {
+    printf $1 
 
-    if [ $? -gt 0 ]; then
-        printf "\n\nINTEGRATION TEST FAILED\n\n"
+    ./build/cli --data $2 > /tmp/test-output.txt 2>&1
 
-        exit 255
+    res=$?
+
+    if [[ $res -eq 0 ]]; then
+        if [[ $3 == "true" ]]; then
+            printf "\t--\t [ok]\n\n"
+        else
+            printf "\t--\tTEST FAILED\n\n"
+        fi
+    else
+        if [[ $3 == "true" ]]; then
+            printf "\t--\tTEST FAILED\n\n"
+        else
+            printf "\t--\t [ok]\n\n"
+        fi
     fi
 
-    exit 0
+    cat /tmp/test-output.txt
+    rm /tmp/test-output.txt
+
+    if [[ $res -eq 0 ]] && [[ $3 == "false" ]]; then
+        exit 1
+    elif [[ $res -gt 0 ]] && [[ $3 == "true" ]]; then
+        exit 1
+    fi
+}
+
+integration_test() {
+    # Build the cli version so we don't have the dependency of the api gateway
+    ./scripts/build.sh --cli
+
+    test "\nStarting missing host test to fail: " "./test/body.missing_host.json" "false"
+    test "\nStarting missing data test to fail: " "./test/body.missing_data.json" "false"
+    test "\nStarting test to pass: " "./test/body.valid.json" "true"
 }
 
 e2e_test() {
@@ -55,6 +82,7 @@ e2e_test() {
     kill -2 $SAM_PID
 
     # Confirm response
+    # THIS NEEDS TO BE FIXED AS WELL
     if [[ $result == $(printf "{ \"message\": \"Sent\" }\n") ]]; then
         exit 0
     else
