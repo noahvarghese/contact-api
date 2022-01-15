@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-func Bind(t *getter.Template, b map[string]string) (string, error) {
+func Bind(t *getter.Template, b map[string]interface{}) (string, error) {
 	tmpl, err := template.New("template").Parse(t.Template)
 
 	if err != nil {
@@ -25,6 +25,8 @@ func Bind(t *getter.Template, b map[string]string) (string, error) {
 }
 
 func Send(m string, h *getter.Host) error {
+	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+
 	to := []string{h.Email}
 
 	password := os.Getenv("SMTP_PWD")
@@ -32,7 +34,8 @@ func Send(m string, h *getter.Host) error {
 	url := os.Getenv("SMTP_URL")
 	user := os.Getenv("SMTP_USER")
 
-	message := []byte(fmt.Sprintf("Subject: %s\r\n\r\n%s", h.Subject, m))
+	subject := fmt.Sprintf("Subject: %s\r\n", h.Subject)
+	message := []byte(subject + mime + "\r\n" + m)
 
 	auth := smtp.PlainAuth("", user, password, url)
 
