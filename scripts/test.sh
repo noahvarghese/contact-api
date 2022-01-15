@@ -22,47 +22,9 @@ get_test_data_json() {
     echo $body_json
 }
 
-# $1 is the title of the test
-# $2 is the input file to test
-# $3 boolean, false means we are running test to fail, true means test to pass
-test() {
-    printf $1 
-
-    ./build/cli --data $2 > /tmp/test-output.txt 2>&1
-
-    res=$?
-
-    if [[ $res -eq 0 ]]; then
-        if [[ $3 == "true" ]]; then
-            printf "\t--\t [ok]\n\n"
-        else
-            printf "\t--\tTEST FAILED\n\n"
-        fi
-    else
-        if [[ $3 == "true" ]]; then
-            printf "\t--\tTEST FAILED\n\n"
-        else
-            printf "\t--\t [ok]\n\n"
-        fi
-    fi
-
-    cat /tmp/test-output.txt
-    rm /tmp/test-output.txt
-
-    if [[ $res -eq 0 ]] && [[ $3 == "false" ]]; then
-        exit 1
-    elif [[ $res -gt 0 ]] && [[ $3 == "true" ]]; then
-        exit 1
-    fi
-}
-
-integration_test() {
-    # Build the cli version so we don't have the dependency of the api gateway
-    ./scripts/build.sh --cli
-
-    test "\nStarting missing host test to fail: " "./test/body.missing_host.json" "false"
-    test "\nStarting missing data test to fail: " "./test/body.missing_data.json" "false"
-    test "\nStarting test to pass: " "./test/body.valid.json" "true"
+unit_test() {
+    go clean -testcache
+    go test ./...
 }
 
 e2e_test() {
@@ -101,10 +63,10 @@ TEST=""
 # Get from cli args whether end to end or integration test
 if [[ $1 == --e2e ]] || [[ $1 == '-e' ]]; then
     TEST="e2e_test"
-elif [[ $1 == --integration ]] || [[ $1 == '-i' ]]; then
-    TEST="integration_test"
+elif [[ $1 == --unit ]] || [[ $1 == '-u' ]]; then
+    TEST="unit_test"
 else
-    printf "Invalid option, must be one of ['--e2e', '-e'] or ['--integration', '-i']\n"
+    printf "Invalid option, must be one of ['--e2e', '-e'] or ['--unit', '-u']\n"
     exit 1
 fi
 

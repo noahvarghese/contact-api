@@ -57,15 +57,14 @@ func Handler(ctx context.Context, event events.APIGatewayProxyRequest) (map[stri
 		return response(err.Error(), http.StatusInternalServerError), nil
 	}
 
-	// Get the host from url
+	// If no host return 403
 	host := &getter.Host{
 		Url: hostname,
 	}
-	host.Read(db)
+	err = host.Read(db)
 
-	// If no host return 403
-	if host.ID < 1 {
-		return response("Invalid host", http.StatusBadRequest), nil
+	if err != nil {
+		return response("Invalid host", http.StatusForbidden), nil
 	}
 
 	// If no schema return 404
@@ -73,7 +72,7 @@ func Handler(ctx context.Context, event events.APIGatewayProxyRequest) (map[stri
 	t.Read(db, host.ID)
 
 	if t.ID < 1 {
-		return response("Template not found for host "+host.Url, http.StatusInternalServerError), nil
+		return response("No template found for host "+host.Url, http.StatusNotFound), nil
 	}
 
 	// Get all fields for template from db

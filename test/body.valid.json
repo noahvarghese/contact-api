@@ -1,1 +1,1 @@
-{"hostname":"owd.noahvarghese.me", "data":{"name":"test", "email": "test@test.com", "message": "This is a test."}}
+{"hostname":"test.com", "data":{"required": "test", "not_required": "test@test.com"}}
