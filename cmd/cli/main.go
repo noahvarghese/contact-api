@@ -50,7 +50,18 @@ func main() {
 	load_dotenv(*dotenv)
 	data := get_json_data(*file)
 
-	app.Handler(context.TODO(), events.APIGatewayProxyRequest{
+	res, err := app.Handler(context.TODO(), events.APIGatewayProxyRequest{
 		Body: data,
 	})
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	if res["statusCode"].(int) != 201 {
+		fmt.Fprintln(os.Stderr, "Failed with status:", res["statusCode"].(int))
+		fmt.Fprintln(os.Stderr, res["body"].(map[string]string)["message"])
+		os.Exit(1)
+	}
 }
