@@ -44,8 +44,6 @@ func response(b string, status int) map[string]interface{} {
 	}
 
 	return res
-	// jsonRes, _ := json.Marshal(res)
-	// return string(jsonRes)
 }
 
 func Handler(ctx context.Context, event events.APIGatewayProxyRequest) (map[string]interface{}, error) {
