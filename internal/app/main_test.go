@@ -64,6 +64,8 @@ func TestHandlerAllData(t *testing.T) {
 	assert.Equal(t, "Sent", d["body"].(map[string]string)["message"])
 }
 
+// TODO: Test adding a script in body
+
 func TestHandlerRequiredData(t *testing.T) {
 	b, _ := json.Marshal(map[string]interface{}{
 		"hostname": "test.com",
