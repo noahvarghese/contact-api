@@ -49,7 +49,7 @@ func Handler(ctx context.Context, event events.APIGatewayProxyRequest) (map[stri
 	}
 
 	hostname := fmt.Sprintf("%v", b["hostname"])
-	data := b["data"].(map[string]string)
+	data := b["data"].(map[string]interface{})
 
 	db, err := storage.Connection()
 

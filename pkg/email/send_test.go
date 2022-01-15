@@ -19,7 +19,7 @@ func TestBind(t *testing.T) {
 	tpl := &getter.Template{
 		Template: Template,
 	}
-	body := map[string]string{"Test": "Test"}
+	body := map[string]interface{}{"Test": "Test"}
 
 	tplString, err := Bind(tpl, body)
 
@@ -38,7 +38,7 @@ func TestSend(t *testing.T) {
 	tpl := &getter.Template{
 		Template: Template,
 	}
-	body := map[string]string{"Test": "Test"}
+	body := map[string]interface{}{"Test": "Test"}
 
 	tplString, _ := Bind(tpl, body)
 
