@@ -12,13 +12,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
-      - name: build executable
-        run:  go build -o contact ./cmd/serverless/main.go
-      - name: Publish build artifact 
+      - name: build prod executable 
+        run: ./scripts/build.sh --serverless-prod
+      - name: build test executable 
+        run: ./scripts/build.sh --cli
+      - name: Publish prod build artifact 
         uses: actions/upload-artifact@v2
         with:
-          name: "contact"
-          path: ./contact
+          name: "main"
+          path: ./build/main
+      - name: Publish test build artifact 
+        uses: actions/upload-artifact@v2
+        with:
+          name: "cli"
+          path: ./build/cli
   unit-test:
     env:
       DB_NAME: ${{ secrets.DB_NAME }}
