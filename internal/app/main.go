@@ -17,12 +17,11 @@ import (
 func validate(body map[string]interface{}) error {
 	var err error = nil
 
-	if body["hostname"] == "" {
+	if body["hostname"] == nil {
 		err = errors.New("hostname not set")
 	}
 
-	fmt.Println(body)
-	if body["data"].(map[string]string) == nil && err == nil {
+	if body["data"] == nil && err == nil {
 		err = errors.New("body not set")
 	}
 
@@ -31,11 +30,11 @@ func validate(body map[string]interface{}) error {
 
 func response(b string, status int) map[string]interface{} {
 	return map[string]interface{}{
-		"statusCode": fmt.Sprint(status),
+		"statusCode": status,
 		"headers": map[string]string{
 			"content-type": "application/json",
 		},
-		"body": fmt.Sprintf("{ \"message\": \"%s\" }\n", b),
+		"body": map[string]string{"message": b},
 	}
 }
 
