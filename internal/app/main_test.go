@@ -9,12 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func getMapFromJSON(j string) map[string]interface{} {
-	d := make(map[string]interface{})
-	json.Unmarshal([]byte(j), &d)
-	return d
-}
-
 func TestValidateSuccess(t *testing.T) {
 	body := map[string]interface{}{
 		"hostname": "test.com",
@@ -61,11 +55,9 @@ func TestHandlerAllData(t *testing.T) {
 		},
 	})
 
-	j, err := Handler(context.TODO(), events.APIGatewayProxyRequest{
+	d, err := Handler(context.TODO(), events.APIGatewayProxyRequest{
 		Body: string(b),
 	})
-
-	d := getMapFromJSON(j)
 
 	assert.Nil(t, err)
 	assert.Equal(t, 201, d["statusCode"].(int))
@@ -80,10 +72,9 @@ func TestHandlerRequiredData(t *testing.T) {
 		},
 	})
 
-	j, err := Handler(context.TODO(), events.APIGatewayProxyRequest{
+	d, err := Handler(context.TODO(), events.APIGatewayProxyRequest{
 		Body: string(b),
 	})
-	d := getMapFromJSON(j)
 
 	assert.Nil(t, err)
 	assert.Equal(t, 201, d["statusCode"].(int))
@@ -99,10 +90,9 @@ func TestHandlerMissingRequired(t *testing.T) {
 		},
 	})
 
-	j, err := Handler(context.TODO(), events.APIGatewayProxyRequest{
+	d, err := Handler(context.TODO(), events.APIGatewayProxyRequest{
 		Body: string(b),
 	})
-	d := getMapFromJSON(j)
 
 	assert.Nil(t, err)
 	assert.Equal(t, 400, d["statusCode"].(int))
@@ -114,10 +104,9 @@ func TestHandlerMissingData(t *testing.T) {
 		"hostname": "test.com",
 	})
 
-	j, err := Handler(context.TODO(), events.APIGatewayProxyRequest{
+	d, err := Handler(context.TODO(), events.APIGatewayProxyRequest{
 		Body: string(b),
 	})
-	d := getMapFromJSON(j)
 
 	assert.Nil(t, err)
 	assert.Equal(t, 400, d["statusCode"].(int))
@@ -127,10 +116,9 @@ func TestHandlerMissingData(t *testing.T) {
 func TestHandlerMissingHost(t *testing.T) {
 	b, _ := json.Marshal(map[string]interface{}{})
 
-	j, err := Handler(context.TODO(), events.APIGatewayProxyRequest{
+	d, err := Handler(context.TODO(), events.APIGatewayProxyRequest{
 		Body: string(b),
 	})
-	d := getMapFromJSON(j)
 
 	assert.Nil(t, err)
 	assert.Equal(t, 400, d["statusCode"].(int))
@@ -143,10 +131,9 @@ func TestHandlerInvalidHost(t *testing.T) {
 		"data":     map[string]string{},
 	})
 
-	j, err := Handler(context.TODO(), events.APIGatewayProxyRequest{
+	d, err := Handler(context.TODO(), events.APIGatewayProxyRequest{
 		Body: string(b),
 	})
-	d := getMapFromJSON(j)
 
 	assert.Nil(t, err)
 	assert.Equal(t, 403, d["statusCode"].(int))
@@ -159,10 +146,9 @@ func TestHandlerMissingTemplate(t *testing.T) {
 		"data":     map[string]string{},
 	})
 
-	j, err := Handler(context.TODO(), events.APIGatewayProxyRequest{
+	d, err := Handler(context.TODO(), events.APIGatewayProxyRequest{
 		Body: string(b),
 	})
-	d := getMapFromJSON(j)
 
 	assert.Nil(t, err)
 	assert.Equal(t, 404, d["statusCode"].(int))

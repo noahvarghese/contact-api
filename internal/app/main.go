@@ -14,6 +14,12 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 )
 
+type Response struct {
+	StatusCode int               `json:"statusCode"`
+	Headers    map[string]string `json:"headers"`
+	Body       string            `json:"body"`
+}
+
 func validate(body map[string]interface{}) error {
 	var err error = nil
 
@@ -28,7 +34,7 @@ func validate(body map[string]interface{}) error {
 	return err
 }
 
-func response(b string, status int) string {
+func response(b string, status int) map[string]interface{} {
 	res := map[string]interface{}{
 		"statusCode": status,
 		"headers": map[string]string{
@@ -37,11 +43,12 @@ func response(b string, status int) string {
 		"body": map[string]string{"message": b},
 	}
 
-	jsonRes, _ := json.Marshal(res)
-	return string(jsonRes)
+	return res
+	// jsonRes, _ := json.Marshal(res)
+	// return string(jsonRes)
 }
 
-func Handler(ctx context.Context, event events.APIGatewayProxyRequest) (string, error) {
+func Handler(ctx context.Context, event events.APIGatewayProxyRequest) (map[string]interface{}, error) {
 	b := make(map[string]interface{})
 	json.Unmarshal([]byte(event.Body), &b)
 
