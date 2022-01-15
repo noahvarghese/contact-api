@@ -28,17 +28,20 @@ func validate(body map[string]interface{}) error {
 	return err
 }
 
-func response(b string, status int) map[string]interface{} {
-	return map[string]interface{}{
+func response(b string, status int) string {
+	res := map[string]interface{}{
 		"statusCode": status,
 		"headers": map[string]string{
 			"content-type": "application/json",
 		},
 		"body": map[string]string{"message": b},
 	}
+
+	jsonRes, _ := json.Marshal(res)
+	return string(jsonRes)
 }
 
-func Handler(ctx context.Context, event events.APIGatewayProxyRequest) (map[string]interface{}, error) {
+func Handler(ctx context.Context, event events.APIGatewayProxyRequest) (string, error) {
 	b := make(map[string]interface{})
 	json.Unmarshal([]byte(event.Body), &b)
 
