@@ -42,36 +42,6 @@ jobs:
         with:
           go-version: '^1.17'
       - name: unit test
-        run: go test ./...
-  e2e-test:
-    env:
-      DB_NAME: ${{ secrets.DB_NAME }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_PWD: ${{ secrets.DB_PWD }}
-      DB_URL: ${{ secrets.DB_URL }}
-      DB_USER: ${{ secrets.DB_USER }}
-      SMTP_PWD: ${{ secrets.SMTP_PWD }}
-      SMTP_PORT: ${{ secrets.SMTP_PORT }}
-      SMTP_URL: ${{ secrets.SMTP_URL }}
-      SMTP_USER: ${{ secrets.SMTP_USER }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    if: "(!contains(github.event.head_commit.message, 'pipeline skip') && !contains(github.event.head_commit.message, 'skip pipeline')) || (!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci'))"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '^1.17'
-      - uses: aws-actions/setup-sam@v1
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ca-central-1
-      - name: end to end test
-        run: ./scripts/test.sh --e2e
-
-      
+        run: go test ./...      
 
 
