@@ -26,5 +26,8 @@ Resources:
           Properties:
             Path: /
             Method: POST 
+      VpcConfig:
+        SubnetIds:
+          - subnet-09e141a7322b1fe04
     Metadata:
       BuildMethod: makefile
