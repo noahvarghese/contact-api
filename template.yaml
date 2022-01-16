@@ -28,7 +28,7 @@ Resources:
             Method: POST 
       VpcConfig:
         SecurityGroupIds:
-          - sg-3ccf2e52
+          - sg-0ceb920ea9b5d40dd
         SubnetIds:
           - subnet-09e141a7322b1fe04
     Metadata:
