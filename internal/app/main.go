@@ -36,7 +36,8 @@ func validate(body map[string]interface{}) error {
 
 func response(b string, status int) map[string]interface{} {
 	res := map[string]interface{}{
-		"statusCode": status,
+		"isBase64Encoded": false,
+		"statusCode":      status,
 		"headers": map[string]string{
 			"content-type": "application/json",
 		},
