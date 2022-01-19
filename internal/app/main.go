@@ -35,13 +35,15 @@ func validate(body map[string]interface{}) error {
 }
 
 func response(b string, status int) map[string]interface{} {
+	body, _ := json.Marshal(map[string]string{"message": b})
+
 	res := map[string]interface{}{
 		"isBase64Encoded": false,
 		"statusCode":      status,
 		"headers": map[string]string{
 			"content-type": "application/json",
 		},
-		"body": map[string]string{"message": b},
+		"body": string(body),
 	}
 
 	return res
