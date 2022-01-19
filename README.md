@@ -17,10 +17,15 @@ This is a sample template for contact - Below is a brief explanation of what we 
 ## About
 
 Works for websites which I (Noah) have written.
+
 A lot of small business sites may have a contact request form on the website.
+
 That form is unauthenticated, meaning anyone could send a request.
-And instead of just handling that on a website per wesite basis, I wasnt one service that handles all unauthenticated contact requests for these sites.
+
+And instead of just handling that on a website per wesite basis, I want one service that handles all unauthenticated contact requests for these sites.
+
 So that if my email account gets hacked I only have to update one set of environment variables.
+
 And that way all messages are stored in a database.
 
 ## Flow
@@ -68,10 +73,10 @@ make
 **Invoking function locally through local API Gateway**
 
 ```bash
-sam local start-api
+./scripts/local.sh
 ```
 
-If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function `http://localhost:3000/hello`
+If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function `http://localhost:3000`
 
 **SAM CLI** is used to emulate both Lambda and API Gateway locally and uses our `template.yaml` to understand how to bootstrap this environment (runtime, where the source code is, etc.) - The following excerpt is what the CLI will read in order to initialize an API and its routes:
 
@@ -81,7 +86,7 @@ Events:
     HelloWorld:
         Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
         Properties:
-            Path: /hello
+            Path: /
             Method: get
 ```
 
