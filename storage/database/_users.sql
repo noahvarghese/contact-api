@@ -1,4 +1,4 @@
-/* CREATE USER 'contact'@'%' IDENTIFIED BY ''; */
+CREATE USER 'contact'@'%' IDENTIFIED BY ;
 /* DROP USER 'contact'; */
 
 REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'contact'@'%';
