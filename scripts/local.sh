@@ -10,5 +10,5 @@ build_env_json_file() {
 }
 
 sam build --use-container
-# Need to build .env.json
+build_env_json_file
 sam local start-api -n ./.env.json
