@@ -42,6 +42,7 @@ func response(b string, status int) map[string]interface{} {
 		"statusCode":      status,
 		"headers": map[string]string{
 			"content-type": "application/json",
+			"Access-Control-Allow-Origin": "*",
 		},
 		"body": string(body),
 	}
