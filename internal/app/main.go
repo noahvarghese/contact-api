@@ -54,6 +54,7 @@ func Handler(ctx context.Context, event events.APIGatewayProxyRequest) (map[stri
 	b := make(map[string]interface{})
 	json.Unmarshal([]byte(event.Body), &b)
 
+	// Check that the expected fields of 'data' and 'hostname' are set in request body
 	err := validate(b)
 
 	if err != nil {
@@ -79,10 +80,11 @@ func Handler(ctx context.Context, event events.APIGatewayProxyRequest) (map[stri
 		return response("Invalid host", http.StatusForbidden), nil
 	}
 
-	// If no schema return 404
+	// Set Email template
 	t := &getter.Template{}
 	t.Read(db, host.ID)
 
+	// If no template return 404
 	if t.ID < 1 {
 		return response("No template found for host "+host.Url, http.StatusNotFound), nil
 	}
