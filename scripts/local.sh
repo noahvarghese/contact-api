@@ -9,6 +9,8 @@ build_env_json_file() {
     echo "$env_json" > .env.json
 }
 
+# Loads environment variables into memory and build json file for development api to use
+source ./env.sh && envup && build_env_json_file
+
 sam build --use-container
-build_env_json_file
 sam local start-api -n ./.env.json
