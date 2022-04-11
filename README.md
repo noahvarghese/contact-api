@@ -1,69 +1,100 @@
-# contact 
+# contact-api
 
+Serverless API made to send templated emails for unauthenticated contact forms.
+
+## Application Flow
+
+1. Receives post body (JSON)
+2. Checks that hostname was passed in the body, as well as a data object
+3. If no hostname set, or body is empty return 400
+4. Checks database for hostname
+5. If hostname is not recognized return 403
+6. Checks the database for a template associated with the hostname
+7. If no template found return 404
+8. Retrieves list of fields from database that are used in the template
+9. Parses data object and checks against the fields retrieved from the database
+10. If a mandatory field is missing return 400
+11. Store stringified JSON in database in case email fails
+12. Bind data to template
+13. Send email
+14. a. If failed return 500
+    b. else set message sent in database and return 201
+
+## Requirements
+
+- MYSQL database configured
+- AWS CLI already configured with Administrator permission
+- [Docker installed](https://www.docker.com/community-edition)
+- [Golang](https://golang.org)
+- SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+
+## Development
+
+Utilizes GitHub Actions for CI/CD
+
+1. Fork repository
+2. Execute ./storage/database/\_schema.sql against your database instance
+3. Following the sample data found in ./storage/database/data.sql create the desired hosts,fields, and templates for your supported websites
+4. Run SQL commands found in ./storage/database/\_users.sql REPLACING 'tmp_password' WITH THE PASSWORD OF YOUR CHOICE
+5. Setup all environment variables as GitHub repository secrets (Replace DB_USER and DB_PWD with the user you just created)
+6. Create .env with environment variables (Replace DB_USER and DB_PWD with the user you just created)
+
+## Deployment
+
+Adding/modifying templates and hosts is done through SQL and is seperate from the application code.
+
+You can find your API Gateway Endpoint URL in the output values displayed after deployment.
+
+1. Clone repository
+2. Execute ./storage/database/\_schema.sql against your database instance
+3. Following the sample data found in ./storage/database/data.sql create the desired hosts,fields, and templates for your supported websites
+4. Run SQL commands found in ./storage/database/\_users.sql REPLACING 'tmp_password' WITH THE PASSWORD OF YOUR CHOICE
+5. Create .env with environment variables (Replace DB_USER and DB_PWD with the user you just created)
+6. Execute
+
+   ```shell
+   ./bin/deploy.sh
+   ```
+
+7. Go to the lambda environment and configure the application environment variables
+
+## Environment Variables
+
+Application type variables are needed for your app to run locally and in prod.
+Build type variables are used during the build/deployment process and are not needed in your lambda environment.
+
+| name                   | description                                                                           | type        |
+| ---------------------- | ------------------------------------------------------------------------------------- | ----------- |
+| AWS_ACCESS_KEY_ID      | The ID of the AWS IAM user                                                            | build       |
+| AWS_SECRECT_ACCESS_KEY | AWS secret for the user                                                               | build       |
+| DB_NAME                | The name of the database                                                              | application |
+| DB_PORT                | The port to access the database on                                                    | application |
+| DB_PWD                 | The password for the database user                                                    | application |
+| DB_URL                 | The IP address or URL to access the database on                                       | application |
+| DB_USER                | The username to log in to the database as                                             | application |
+| S3_BUCKET              | The bucket to upload the build to                                                     | build       |
+| S3_PREFIX              | If using a single s3 bucket for multiple application artifacts, this is the subfolder | build       |
+| SMTP_PWD               | The password for your email server                                                    | application |
+| SMTP_PORT              | The port to access the email server                                                   | application |
+| SMTP_URL               | The URL or IP address of the email server                                             | application |
+| SMTP_USER              | The user to login to the email server                                                 | application |
+
+## Resources
+
+https://pkg.go.dev/html/template
 https://aws.amazon.com/premiumsupport/knowledge-center/custom-headers-api-gateway-lambda/
 https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/
 https://github.com/aws/aws-lambda-go/blob/main/events/README_ApiGatewayEvent.md
 
-This is a sample template for contact - Below is a brief explanation of what we have generated for you:
-
-```bash
-.
-├── Makefile                    <-- Make to automate build
-├── README.md                   <-- This instructions file
-├── src                         <-- Source code for a lambda function
-│   └─ main.go                 <-- Lambda function code
-└── template.yaml
-```
-## About
-
-Works for websites which I (Noah) have written.
-
-A lot of small business sites may have a contact request form on the website.
-
-That form is unauthenticated, meaning anyone could send a request.
-
-And instead of just handling that on a website per wesite basis, I want one service that handles all unauthenticated contact requests for these sites.
-
-So that if my email account gets hacked I only have to update one set of environment variables.
-
-And that way all messages are stored in a database.
-
-## Flow
-
-1. Receives post body (map of strings), and potentially image(s).
-2. Checks the sending host
-3. Gets the schema for the expected format of the received data from the database based off the host.
-4.
-  a. If no host found return 403.
-  b. If schema found continue
-5. Process images into s3 zip archive
-6. Store received data in DB
-
-7. Send "MESSAGE_READY" event with: the ID of the data in NoSQL, and the path of the image archive
-
--- Next Service --
-
-8. Recveives event from queue
-9. Retrieves the message and the template to use from the database
-10. combines the data into the email template
-11. Sends the email
-
-## Requirements
-
-* AWS CLI already configured with Administrator permission
-* [Docker installed](https://www.docker.com/community-edition)
-* [Golang](https://golang.org)
-* SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
-
 ## Setup process
 
-### Installing dependencies & building the target 
+### Installing dependencies & building the target
 
-In this example we use the built-in `sam build` to automatically download all the dependencies and package our build target.   
-Read more about [SAM Build here](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-build.html) 
+In this example we use the built-in `sam build` to automatically download all the dependencies and package our build target.  
+Read more about [SAM Build here](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-build.html)
 
 The `sam build` command is wrapped inside of the `Makefile`. To execute this simply run
- 
+
 ```shell
 make
 ```
@@ -78,99 +109,20 @@ make
 
 If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function `http://localhost:3000`
 
-**SAM CLI** is used to emulate both Lambda and API Gateway locally and uses our `template.yaml` to understand how to bootstrap this environment (runtime, where the source code is, etc.) - The following excerpt is what the CLI will read in order to initialize an API and its routes:
+### Packaging and deployment
 
-```yaml
-...
-Events:
-    HelloWorld:
-        Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-        Properties:
-            Path: /
-            Method: get
+Requires environemnt variables set in .env
+Uses SAM CLI to build and deploy
+
+```shell
+./bin/deployment.sh
 ```
-
-## Packaging and deployment
-
-AWS Lambda Golang runtime requires a flat folder with the executable generated on build step. SAM will use `CodeUri` property to know where to look up for the application:
-
-```yaml
-...
-    FirstFunction:
-        Type: AWS::Serverless::Function
-        Properties:
-            CodeUri: hello_world/
-            ...
-```
-
-To deploy your application for the first time, run the following in your shell:
-
-```bash
-sam deploy --guided
-```
-
-The command will package and deploy your application to AWS, with a series of prompts:
-
-* **Stack Name**: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, and a good starting point would be something matching your project name.
-* **AWS Region**: The AWS region you want to deploy your app to.
-* **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
-* **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this example, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modifies IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
-* **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to your application.
-
-You can find your API Gateway Endpoint URL in the output values displayed after deployment.
 
 ### Testing
 
-We use `testing` package that is built-in in Golang and you can simply run the following command to run our tests:
+Requires that the environment variables be loaded into memory.
+Uses the `testing` package that is built-in in Golang.
 
 ```shell
-go test -v ./hello-world/
+./bin/test.sh
 ```
-# Appendix
-
-### Golang installation
-
-Please ensure Go 1.x (where 'x' is the latest version) is installed as per the instructions on the official golang website: https://golang.org/doc/install
-
-A quickstart way would be to use Homebrew, chocolatey or your linux package manager.
-
-#### Homebrew (Mac)
-
-Issue the following command from the terminal:
-
-```shell
-brew install golang
-```
-
-If it's already installed, run the following command to ensure it's the latest version:
-
-```shell
-brew update
-brew upgrade golang
-```
-
-#### Chocolatey (Windows)
-
-Issue the following command from the powershell:
-
-```shell
-choco install golang
-```
-
-If it's already installed, run the following command to ensure it's the latest version:
-
-```shell
-choco upgrade golang
-```
-
-## Bringing to the next level
-
-Here are a few ideas that you can use to get more acquainted as to how this overall process works:
-
-* Create an additional API resource (e.g. /hello/{proxy+}) and return the name requested through this new path
-* Update unit test to capture that
-* Package & Deploy
-
-Next, you can use the following resources to know more about beyond hello world samples and how others structure their Serverless applications:
-
-* [AWS Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/)
